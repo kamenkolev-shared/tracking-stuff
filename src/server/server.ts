@@ -17,7 +17,6 @@ const log = (userID: string, message: string) => {
     logs = {}
   }
 
-
   const entry = { time: Date.now(), message }
   console.log(entry)
   if (!(userID in logs)) {
@@ -77,7 +76,7 @@ async function BeaconHandler(req: Request) {
   const text = await req.text()
   const userID = req.url.split("?userID=")[1]
 
-  log(userID, `TEXTED: ${text}`)
+  log(userID, text)
 
   return new Response(null, {
     status: 200,

@@ -7,8 +7,8 @@ type AppUsageState = "active" | "offline" | "inactive"
 
 type AppUsageData = {
   userId: string
-  from: Date
-  to: Date
+  from: number
+  to: number
   use: AppUsageState
 }
 
@@ -33,10 +33,11 @@ class UserUsageTracker {
       this.extendLastEntry(at)
     } else if (this.lastEntry) {
       this.store.log(this.lastEntry)
+      const now = Date.now()
       const newEntry: AppUsageData = {
         // ? should it not use the user-provided time?
-        from: new Date(),
-        to: new Date(),
+        from: now,
+        to: now,
         use: "active",
         userId: this.userId,
       }

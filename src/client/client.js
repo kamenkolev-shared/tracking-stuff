@@ -1,18 +1,10 @@
+import { events } from "./events.js"
+
 const userID = +Math.random().toFixed(2) * 100
 console.log(userID)
 
 export const wsURL = `ws://localhost:5000?userID=${userID}`
 export const beaconURL = `http://localhost:5001?userID=${userID}`
-
-
-const messages = {
-  hidden: "page hidden",
-  visible: "page visible",
-  blurred: "window blurred",
-  focused: "window focused",
-
-  unload: "page unloading", // ? useless?
-}
 
 const openWS = () => {
   console.log("openWS called")
@@ -45,21 +37,21 @@ openWS()
 document.addEventListener("visibilitychange", function () {
   // ! does not trigger initially
   if (document.visibilityState === "visible") {
-    navigator.sendBeacon(beaconURL, messages.visible)
+    navigator.sendBeacon(beaconURL, events.pageVisible)
   } else {
-    navigator.sendBeacon(beaconURL, messages.hidden)
+    navigator.sendBeacon(beaconURL, events.pageHide)
   }
 })
 
 // ? For when app is not focused
 window.addEventListener("blur", _e => {
-  navigator.sendBeacon(beaconURL, messages.blurred)
+  navigator.sendBeacon(beaconURL, events.windowBlur)
 })
 
 window.addEventListener("focus", _e => {
-  navigator.sendBeacon(beaconURL, messages.focused)
+  navigator.sendBeacon(beaconURL, events.windowFocus)
 })
 
 window.addEventListener("unload", _e => {
-  navigator.sendBeacon(beaconURL, messages.unload)
+  navigator.sendBeacon(beaconURL, events.windowUnload)
 })
