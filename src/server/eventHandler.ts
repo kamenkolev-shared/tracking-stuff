@@ -51,7 +51,6 @@ class UserUsageTracker {
   userWentOffline(at: Date) {}
 
   private extendLastEntry(to: Date) {
-    this.lastEntry!.to = to
   }
 
   constructor(

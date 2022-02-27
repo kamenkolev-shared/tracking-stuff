@@ -1,11 +1,15 @@
-import { events } from "./events.js"
+import { baseURL, userID } from "./shared.js"
 
-const userID = +Math.random().toFixed(2) * 100
-console.log(userID)
-
-const baseURL = "tracking-stuff.deno.dev"
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
 const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
+const events = {
+  pageHide: "PAGE HIDDEN",
+  pageVisible: "PAGE VISIBLE",
+  windowBlur: "WINDOW BLURRED",
+  windowFocus: "WINDOW FOCUSED",
+
+  windowUnload: "PAGE UNLOADING", // ? useless?
+}
 
 const openWS = () => {
   console.log("openWS called")

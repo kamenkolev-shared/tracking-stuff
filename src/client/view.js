@@ -1,18 +1,22 @@
+import { baseURL, userID } from "./shared"
+
 const el = document.getElementsByTagName("pre")[0]
 
+// @ts-ignore
+document.getElementById('userID').textContent = userID
 const updateButton = document.querySelector("button#update")
 const clearButton = document.querySelector("button#clear")
 
 function updateLogList() {
-  fetch("https://tracking-stuff.deno.dev/list")
+  fetch(`${baseURL}/list`)
     .then(req => req.json())
-    .then(json => (el.textContent = JSON.stringify(json,undefined,2)))
+    .then(json => (el.textContent = JSON.stringify(json, undefined, 2)))
 }
 
 updateButton?.addEventListener("click", updateLogList)
 
 clearButton?.addEventListener("click", () => {
-  fetch("https://tracking-stuff.deno.dev/clearList", { method: "HEAD" })
+  fetch(`${baseURL}/clearList`, { method: "HEAD" })
 })
 
 updateLogList()
