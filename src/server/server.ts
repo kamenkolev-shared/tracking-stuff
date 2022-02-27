@@ -118,6 +118,7 @@ function ListLogsHandler(req: Request) {
     status: 200,
     headers: {
       "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
     },
   })
 }
@@ -128,6 +129,7 @@ function ClearLogsHandler(req: Request) {
     status: 200,
     headers: {
       "Content-Type": "text/plain",
+      "Access-Control-Allow-Origin": "*",
     },
   })
 }
