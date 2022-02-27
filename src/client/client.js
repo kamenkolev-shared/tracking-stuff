@@ -3,7 +3,9 @@ export const beaconURL = "http://localhost:5001"
 
 const ws = new WebSocket(wsURL)
 ws.onopen = () => {
-  ws.send("HELLO FROM CLIENT")
+  setInterval(() => {
+    ws.send("HELLO FROM CLIENT")
+  }, 5000)
 }
 
 document.addEventListener("visibilitychange", function () {
