@@ -71,41 +71,41 @@ function WSHandler(req: Request) {
 
 serve(WSHandler, { port: 5000 })
 
-// beacon handler
-async function BeaconHandler(req: Request) {
-  const text = await req.text()
-  const userID = req.url.split("?userID=")[1]
+// // beacon handler
+// async function BeaconHandler(req: Request) {
+//   const text = await req.text()
+//   const userID = req.url.split("?userID=")[1]
 
-  log(userID, text)
+//   log(userID, text)
 
-  return new Response(null, {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  })
-}
+//   return new Response(null, {
+//     status: 200,
+//     headers: {
+//       "Access-Control-Allow-Origin": "*",
+//     },
+//   })
+// }
 
-serve(BeaconHandler, { port: 5001 })
+// serve(BeaconHandler, { port: 5001 })
 
-// log store and clear
-function StoreHandler(req: Request) {
-  if (req.method === "GET") {
-    return new Response(JSON.stringify(logs), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-  } else {
-    logs = {}
-    return new Response("logs cleared!", {
-      status: 200,
-      headers: {
-        "Content-Type": "text/plain",
-      },
-    })
-  }
-}
+// // log store and clear
+// function StoreHandler(req: Request) {
+//   if (req.method === "GET") {
+//     return new Response(JSON.stringify(logs), {
+//       status: 200,
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     })
+//   } else {
+//     logs = {}
+//     return new Response("logs cleared!", {
+//       status: 200,
+//       headers: {
+//         "Content-Type": "text/plain",
+//       },
+//     })
+//   }
+// }
 
-serve(StoreHandler, { port: 5002 })
+// serve(StoreHandler, { port: 5002 })
