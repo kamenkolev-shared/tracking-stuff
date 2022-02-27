@@ -3,8 +3,8 @@ import { events } from "./events.js"
 const userID = +Math.random().toFixed(2) * 100
 console.log(userID)
 
-const baseURL = "tracking-stuff.deno.dev/"
-const wsURL = `ws://${baseURL}/ws?userID=${userID}`
+const baseURL = "tracking-stuff.deno.dev"
+const wsURL = `wss://${baseURL}/ws?userID=${userID}`
 const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
 
 const openWS = () => {
