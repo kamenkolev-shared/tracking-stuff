@@ -29,7 +29,7 @@ const log = (userID: string, message: string) => {
 const paths = ["ws", "log", "list", "clearList"] as const
 type path = typeof paths[number]
 
-function Handler(req: Request) {
+async function Handler(req: Request) {
   const path: path = new URL(req.url).pathname.slice(1) as path
 
   if (!paths.includes(path as any)) {
@@ -96,17 +96,21 @@ function WSHandler(req: Request) {
 
 // beacon handler
 async function EventLogHandler(req: Request) {
-  const text = await req.text()
-  const userID = req.url.split("?userID=")[1]
+  try {
+    const text = await req.text()
+    const userID = req.url.split("?userID=")[1]
 
-  log(userID, text)
+    log(userID, text)
 
-  return new Response(null, {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  })
+    return new Response(null, {
+      status: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+  } catch (error) {
+    return new Response(JSON.stringify(error), { status: 400 })
+  }
 }
 
 function ListLogsHandler(req: Request) {
