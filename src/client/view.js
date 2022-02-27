@@ -1,4 +1,4 @@
-import { baseURL, userID } from "./shared"
+import { baseURL, userID } from "./shared.js"
 
 const el = document.getElementsByTagName("pre")[0]
 
