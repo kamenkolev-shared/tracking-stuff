@@ -7,13 +7,15 @@ function WSHandler(req: Request) {
   }
   const { socket, response } = Deno.upgradeWebSocket(req)
 
+  const userID = req.url.split("?userID=")[1]
+
   socket.onclose = _e => {
-    console.log("SOCKET CLOSED!")
+    console.log(`SOCKET for user ${userID} CLOSED!`)
     clearInterval(timeoutInterval)
   }
 
   socket.onerror = _e => {
-    console.log("SOCKET ERRORED")
+    console.log(`SOCKET for user ${userID} ERRORED`)
   }
 
   const maxDuration = 5000
@@ -21,20 +23,20 @@ function WSHandler(req: Request) {
 
   const timeoutInterval = setInterval(() => {
     if (Date.now() > expirationTimestamp) {
-      console.log("USER TIMED OUT")
+      console.log(`USER ${userID} TIMED OUT`)
       socket.close()
     }
   }, 5000)
 
   socket.onmessage = e => {
     if (e.data === "ping") {
-      console.log("user pinged")
+      console.log(`USER ${userID} PINGED`)
       expirationTimestamp = Date.now() + maxDuration
     }
   }
 
   socket.onopen = _e => {
-    console.log("SOCKET OPEN")
+    console.log(`SOCKET for user ${userID} OPEN`)
   }
 
   return response
@@ -45,7 +47,9 @@ serve(WSHandler, { port: 5000 })
 // beacon handler
 async function BeaconHandler(req: Request) {
   const text = await req.text()
-  console.log({ text })
+  const userID = req.url.split("?userID=")[1]
+
+  console.log(`user: ${userID}`, text)
 
   return new Response(null, {
     status: 200,

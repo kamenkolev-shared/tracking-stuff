@@ -1,5 +1,9 @@
-export const wsURL = "ws://localhost:5000"
-export const beaconURL = "http://localhost:5001"
+const userID = +Math.random().toFixed(2) * 100
+console.log(userID)
+
+export const wsURL = `ws://localhost:5000?userID=${userID}`
+export const beaconURL = `http://localhost:5001?userID=${userID}`
+
 
 const messages = {
   hidden: "page hidden",
