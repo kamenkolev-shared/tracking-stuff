@@ -26,6 +26,31 @@ const log = (userID: string, message: string) => {
   logSize++
 }
 
+const paths = ["ws", "log", "list", "clearList"] as const
+type path = typeof paths[number]
+
+function Handler(req: Request) {
+  const path: path = new URL(req.url).pathname.slice(1) as path
+
+  if (!paths.includes(path as any)) {
+    return new Response(null, { status: 404 })
+  }
+
+  switch (path) {
+    case "ws":
+      return WSHandler(req)
+
+    case "log":
+      return EventLogHandler(req)
+
+    case "clearList":
+      return ClearLogsHandler(req)
+
+    case "list":
+      return ListLogsHandler(req)
+  }
+}
+
 function WSHandler(req: Request) {
   console.log("handler called")
   if (req.headers.get("upgrade") != "websocket") {
@@ -69,43 +94,38 @@ function WSHandler(req: Request) {
   return response
 }
 
-serve(WSHandler, { port: 5000 })
+// beacon handler
+async function EventLogHandler(req: Request) {
+  const text = await req.text()
+  const userID = req.url.split("?userID=")[1]
 
-// // beacon handler
-// async function BeaconHandler(req: Request) {
-//   const text = await req.text()
-//   const userID = req.url.split("?userID=")[1]
+  log(userID, text)
 
-//   log(userID, text)
+  return new Response(null, {
+    status: 200,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  })
+}
 
-//   return new Response(null, {
-//     status: 200,
-//     headers: {
-//       "Access-Control-Allow-Origin": "*",
-//     },
-//   })
-// }
+function ListLogsHandler(req: Request) {
+  return new Response(JSON.stringify(logs), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+}
 
-// serve(BeaconHandler, { port: 5001 })
+function ClearLogsHandler(req: Request) {
+  logs = {}
+  return new Response("logs cleared!", {
+    status: 200,
+    headers: {
+      "Content-Type": "text/plain",
+    },
+  })
+}
 
-// // log store and clear
-// function StoreHandler(req: Request) {
-//   if (req.method === "GET") {
-//     return new Response(JSON.stringify(logs), {
-//       status: 200,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     })
-//   } else {
-//     logs = {}
-//     return new Response("logs cleared!", {
-//       status: 200,
-//       headers: {
-//         "Content-Type": "text/plain",
-//       },
-//     })
-//   }
-// }
-
-// serve(StoreHandler, { port: 5002 })
+serve(Handler)
