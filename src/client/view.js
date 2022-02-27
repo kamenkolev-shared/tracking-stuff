@@ -8,7 +8,7 @@ const updateButton = document.querySelector("button#update")
 const clearButton = document.querySelector("button#clear")
 
 function updateLogList() {
-  fetch(`${baseURL}/list`)
+  fetch(`https://${baseURL}/list`)
     .then(req => req.json())
     .then(json => (el.textContent = JSON.stringify(json, undefined, 2)))
 }
@@ -16,7 +16,7 @@ function updateLogList() {
 updateButton?.addEventListener("click", updateLogList)
 
 clearButton?.addEventListener("click", () => {
-  fetch(`${baseURL}/clearList`, { method: "HEAD" })
+  fetch(`https://${baseURL}/clearList`, { method: "HEAD" })
 })
 
 updateLogList()
