@@ -8,6 +8,10 @@ function WSHandler(req: Request) {
   socket.addEventListener("message", e => {
     console.log(e.data)
   })
+
+  socket.onclose = (_e) => {
+    console.log("socket closed")
+  }
   return response
 }
 

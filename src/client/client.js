@@ -4,10 +4,12 @@ export const beaconURL = "http://localhost:5001"
 const ws = new WebSocket(wsURL)
 ws.onopen = () => {
   setInterval(() => {
-    ws.send("HELLO FROM CLIENT")
-  }, 5000)
+    ws.send(new Date().getTime().toString())
+  }, 200)
 }
-
+// VS Page visibility API
+// Tabs which are playing audio are considered foreground and aren't throttled.
+// Tabs running code that's using real-time network connections (WebSockets and WebRTC) go unthrottled in order to avoid closing these connections timing out and getting unexpectedly closed.
 document.addEventListener("visibilitychange", function () {
   // ! does not trigger initially
   if (document.visibilityState === "visible") {
