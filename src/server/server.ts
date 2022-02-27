@@ -102,7 +102,7 @@ async function EventLogHandler(req: Request) {
 
     log(userID, text)
 
-    return new Response(null, {
+    return new Response(JSON.stringify({ text, userID }), {
       status: 200,
       headers: {
         "Access-Control-Allow-Origin": "*",
