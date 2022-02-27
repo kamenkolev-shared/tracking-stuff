@@ -58,7 +58,7 @@ function WSHandler(req: Request) {
 
   socket.onmessage = e => {
     if (e.data === "ping") {
-      log(userID, `USER PINGED`)
+      // log(userID, `USER PINGED`)
       expirationTimestamp = Date.now() + maxDuration
     }
   }
