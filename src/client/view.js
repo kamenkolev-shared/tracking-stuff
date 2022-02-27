@@ -6,7 +6,7 @@ const clearButton = document.querySelector("button#clear")
 function updateLogList() {
   fetch("https://tracking-stuff.deno.dev/list")
     .then(req => req.json())
-    .then(json => (el.textContent = json))
+    .then(json => (el.textContent = JSON.stringify(json,undefined,2)))
 }
 
 updateButton?.addEventListener("click", updateLogList)
