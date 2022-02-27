@@ -38,16 +38,16 @@ async function Handler(req: Request) {
 
   switch (path) {
     case "ws":
-      return WSHandler(req)
+      return await WSHandler(req)
 
     case "log":
-      return EventLogHandler(req)
+      return await EventLogHandler(req)
 
     case "clearList":
-      return ClearLogsHandler(req)
+      return await ClearLogsHandler(req)
 
     case "list":
-      return ListLogsHandler(req)
+      return await ListLogsHandler(req)
   }
 }
 
