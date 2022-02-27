@@ -1,6 +1,5 @@
 export const wsURL = "ws://localhost:5000"
 export const beaconURL = "http://localhost:5001"
-export const authURL = "http://localhost:5002"
 
 const messages = {
   hidden: "page hidden",
@@ -11,11 +10,8 @@ const messages = {
   unload: "page unloading", // ? useless?
 }
 
-// @ts-ignore
-// await fetch(authURL).then(console.log, console.warn)
-
-// TODO pingpong
 const openWS = () => {
+  console.log("openWS called")
   const ws = new WebSocket(wsURL)
   let interval = null
   ws.onopen = () => {
@@ -27,7 +23,7 @@ const openWS = () => {
   const handleClose = () => {
     console.log("handleClose")
     if (interval) {
-      clearInterval()
+      clearInterval(interval)
     }
     openWS()
   }

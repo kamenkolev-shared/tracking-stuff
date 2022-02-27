@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std/http/mod.ts"
-// should userID really be sent from the client? can it be trusted?
 
 function WSHandler(req: Request) {
+  console.log("handler called")
   if (req.headers.get("upgrade") != "websocket") {
     return new Response(null, { status: 501 })
   }
@@ -9,24 +9,27 @@ function WSHandler(req: Request) {
 
   socket.onclose = _e => {
     console.log("SOCKET CLOSED!")
+    clearInterval(timeoutInterval)
   }
 
   socket.onerror = _e => {
     console.log("SOCKET ERRORED")
   }
 
-  let timerHandle = setTimeout(() => {
-    socket.close()
-  }, 3000)
+  const maxDuration = 5000
+  let expirationTimestamp = Date.now() + maxDuration
+
+  const timeoutInterval = setInterval(() => {
+    if (Date.now() > expirationTimestamp) {
+      console.log("USER TIMED OUT")
+      socket.close()
+    }
+  }, 5000)
 
   socket.onmessage = e => {
-    console.log("SOCKET MESSAGE")
     if (e.data === "ping") {
-      clearTimeout(timerHandle)
-      // close socket after assumed 30s network issue
-      timerHandle = setTimeout(() => {
-        socket.close()
-      }, 30000)
+      console.log("user pinged")
+      expirationTimestamp = Date.now() + maxDuration
     }
   }
 
@@ -40,7 +43,6 @@ function WSHandler(req: Request) {
 serve(WSHandler, { port: 5000 })
 
 // beacon handler
-
 async function BeaconHandler(req: Request) {
   const text = await req.text()
   console.log({ text })
@@ -54,19 +56,3 @@ async function BeaconHandler(req: Request) {
 }
 
 serve(BeaconHandler, { port: 5001 })
-
-function AuthHandler(_req: Request) {
-  const res = new Response(null, {
-    status: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Set-Cookie": `id=a3fWa; Max-Age=2592000; HttpOnly`,
-    },
-  })
-
-  return res
-}
-
-serve(AuthHandler, { port: 5002 })
-
-// TODO websocket user session
