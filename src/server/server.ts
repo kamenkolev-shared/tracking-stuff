@@ -33,7 +33,7 @@ function Handler(req: Request) {
   const path: path = new URL(req.url).pathname.slice(1) as path
 
   if (!paths.includes(path as any)) {
-    return new Response(path, { status: 404 })
+    return new Response(path, { status: 400 })
   }
 
   switch (path) {
