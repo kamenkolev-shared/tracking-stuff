@@ -5,7 +5,7 @@ import { debouncePerArg } from "./utils.js"
  *
  * @param {string} data
  */
-const sendEvent = debouncePerArg(data => {
+const sendEvent = debouncePerArg(10)(data => {
   const queued = navigator.sendBeacon(eventLogUrl, data)
   if (!queued) {
     /**
