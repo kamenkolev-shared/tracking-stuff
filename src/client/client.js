@@ -42,15 +42,15 @@ const sendFailedBeacons = async () => {
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
 const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
 const events = {
-  initVisible: "APP INIT & VISIBLE",
-  initHidden: "APP INIT & HIDDEN",
+  initVisible: "APP_INIT & APP_VISIBLE",
+  initHidden: "APP_INIT",
 
-  pageHide: "PAGE HIDDEN",
-  pageVisible: "PAGE VISIBLE",
-  windowBlur: "WINDOW BLURRED",
-  windowFocus: "WINDOW FOCUSED",
+  pageHide: "APP_OBSCURED",
+  pageVisible: "APP_VISIBLE",
+  windowBlur: "APP_OBSCURED",
+  windowFocus: "APP_VISIBLE",
 
-  windowUnload: "PAGE UNLOADING", // ? useless?
+  windowUnload: "APP_CLOSED", // ? useless?
 }
 
 const openWS = () => {
