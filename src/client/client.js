@@ -17,6 +17,7 @@ const sendEvent = data => {
       "failed-beacons",
       JSON.stringify(
         failedBeacons.concat({
+          type: "Beacon failure",
           time: Date.now(),
           url: eventLogUrl,
           data,
@@ -24,6 +25,18 @@ const sendEvent = data => {
       ),
     )
   }
+}
+const sendFailedBeacons = async () => {
+  await Promise.all(
+    JSON.parse(localStorage.getItem("failed-beacons") ?? "[]").map(
+      beaconFailure =>
+        fetch(eventLogUrl, {
+          method: "POST",
+          body: beaconFailure,
+        }),
+    ),
+  )
+  localStorage.setItem('failed-beacons', '[]')
 }
 
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
@@ -91,3 +104,4 @@ sendEvent(
     ? events.initVisible
     : events.initHidden,
 )
+sendFailedBeacons()
