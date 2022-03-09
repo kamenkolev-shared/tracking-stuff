@@ -1,10 +1,11 @@
 import { baseURL, userID } from "./shared.js"
+import { debouncePerArg } from "./utils.js"
 
 /**
  *
- * @param {BodyInit} data
+ * @param {string} data
  */
-const sendEvent = data => {
+const sendEvent = debouncePerArg(data => {
   const queued = navigator.sendBeacon(eventLogUrl, data)
   if (!queued) {
     /**
@@ -25,7 +26,7 @@ const sendEvent = data => {
       ),
     )
   }
-}
+})
 const sendFailedBeacons = async () => {
   await Promise.all(
     JSON.parse(localStorage.getItem("failed-beacons") ?? "[]").map(
@@ -36,7 +37,7 @@ const sendFailedBeacons = async () => {
         }),
     ),
   )
-  localStorage.setItem('failed-beacons', '[]')
+  localStorage.setItem("failed-beacons", "[]")
 }
 
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
