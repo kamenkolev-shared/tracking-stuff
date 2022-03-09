@@ -3,6 +3,9 @@ import { baseURL, userID } from "./shared.js"
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
 const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
 const events = {
+  initVisible: "APP INIT & VISIBLE",
+  initHidden: "APP INIT & HIDDEN",
+
   pageHide: "PAGE HIDDEN",
   pageVisible: "PAGE VISIBLE",
   windowBlur: "WINDOW BLURRED",
@@ -12,7 +15,6 @@ const events = {
 }
 
 const openWS = () => {
-  console.log("openWS called")
   const ws = new WebSocket(wsURL)
   let interval = null
   ws.onopen = () => {
@@ -22,8 +24,7 @@ const openWS = () => {
   }
 
   const handleClose = () => {
-    console.log("handleClose")
-    if (interval) {
+    if (interval !== null) {
       clearInterval(interval)
     }
     openWS()
@@ -36,13 +37,14 @@ const openWS = () => {
 openWS()
 
 // ? for when tab is minimized / maximized / opened / gracefully closed
-document.addEventListener("visibilitychange", function () {
-  // ! does not trigger initially
-  if (document.visibilityState === "visible") {
-    navigator.sendBeacon(eventLogUrl, events.pageVisible)
-  } else {
-    navigator.sendBeacon(eventLogUrl, events.pageHide)
-  }
+
+document.addEventListener("visibilitychange", () => {
+  navigator.sendBeacon(
+    eventLogUrl,
+    document.visibilityState === "visible"
+      ? events.pageVisible
+      : events.pageHide,
+  )
 })
 
 // ? For when app is not focused
@@ -57,3 +59,9 @@ window.addEventListener("focus", _e => {
 window.addEventListener("unload", _e => {
   navigator.sendBeacon(eventLogUrl, events.windowUnload)
 })
+
+// could it be visible, but not focused?
+navigator.sendBeacon(
+  eventLogUrl,
+  document.visibilityState === "visible" ? events.initVisible : events.initHidden,
+)
