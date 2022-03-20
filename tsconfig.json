@@ -12,12 +12,9 @@
       "ES2020",
       "ES2021",
       "ESNext"
-      ],                                        /* Specify a set of bundled library declaration files that describe the target runtime environment. */
-
+      ],
     "moduleResolution": "node",                       /* Specify how TypeScript looks up a file from a given module specifier. */
-    "typeRoots": [
-      "./server/typings"
-    ],                                  /* Specify multiple folders that act like `./node_modules/@types`. */
+                                     /* Specify multiple folders that act like `./node_modules/@types`. */
     "allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the `checkJS` option to get errors from these files. */
     "checkJs": true,                                  /* Enable error reporting in type-checked JavaScript files. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */
