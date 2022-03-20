@@ -1,6 +1,7 @@
 // deno-lint-ignore-file ban-ts-comment
 // @ts-ignore
 import { serve } from "https://deno.land/std/http/mod.ts"
+import { pingInterval } from '../shared'
 
 let logs: {
   [userID: string]: Array<{
@@ -78,7 +79,7 @@ function WSHandler(req: Request) {
       log(userID, `USER TIMED OUT`)
       socket.close()
     }
-  }, 5000)
+  }, pingInterval * 5)
 
   socket.onmessage = e => {
     if (e.data === "ping") {

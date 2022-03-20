@@ -1,11 +1,20 @@
+import { events, pingInterval } from "../shared/index.js"
 import { baseURL, userID } from "./shared.js"
 import { debouncePerArg } from "./utils.js"
+import { event } from "../shared/index"
+
+type FailedBeacon = {
+  type: "Beacon failure"
+  time: number
+  url: string
+  data: event // TODO
+}
 
 /**
  *
  * @param {string} data
  */
-const sendEvent = debouncePerArg(10)(data => {
+const sendEvent = debouncePerArg(10)((data: event) => {
   const queued = navigator.sendBeacon(eventLogUrl, data)
   if (!queued) {
     /**
@@ -14,6 +23,7 @@ const sendEvent = debouncePerArg(10)(data => {
     const failedBeacons = JSON.parse(
       localStorage.getItem("failed-beacons") ?? "[]",
     )
+
     localStorage.setItem(
       "failed-beacons",
       JSON.stringify(
@@ -31,7 +41,7 @@ const sendEvent = debouncePerArg(10)(data => {
 const sendFailedBeacons = async () => {
   await Promise.all(
     JSON.parse(localStorage.getItem("failed-beacons") ?? "[]").map(
-      beaconFailure =>
+      (beaconFailure: string) => // ?string?
         fetch(eventLogUrl, {
           method: "POST",
           body: beaconFailure,
@@ -41,27 +51,17 @@ const sendFailedBeacons = async () => {
   localStorage.setItem("failed-beacons", "[]")
 }
 
+// TODO move and change based on env
 const wsURL = `wss://${baseURL}/ws?userID=${userID}`
 const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
-const events = {
-  initVisible: "APP_INIT & APP_VISIBLE",
-  initHidden: "APP_INIT",
-
-  pageHide: "APP_OBSCURED",
-  pageVisible: "APP_VISIBLE",
-  windowBlur: "APP_OBSCURED",
-  windowFocus: "APP_VISIBLE",
-
-  windowUnload: "APP_CLOSED", // ? useless?
-}
 
 const openWS = () => {
   const ws = new WebSocket(wsURL)
-  let interval = null
+  let interval: number | null = null
   ws.onopen = () => {
     interval = setInterval(() => {
-      ws.send("ping")
-    }, 1000)
+      ws.send("")
+    }, pingInterval)
   }
 
   const handleClose = () => {
