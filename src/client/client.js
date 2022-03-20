@@ -27,6 +27,7 @@ const sendEvent = debouncePerArg(10)(data => {
     )
   }
 })
+
 const sendFailedBeacons = async () => {
   await Promise.all(
     JSON.parse(localStorage.getItem("failed-beacons") ?? "[]").map(
