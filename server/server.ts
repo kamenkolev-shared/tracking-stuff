@@ -23,7 +23,7 @@ const log = (userID: string, message: string) => {
   if (!(userID in logs)) {
     logs[userID] = []
   }
-  logs[userID].push(entry)
+  logs[userID]!.push(entry)
   logSize++
 }
 
@@ -52,15 +52,21 @@ async function Handler(req: Request) {
   }
 }
 
+/**
+ * @throws if no userID queryParam
+ */
 function WSHandler(req: Request) {
   console.log("handler called")
   if (req.headers.get("upgrade") != "websocket") {
     return new Response(null, { status: 501 })
   }
-  // @ts-ignore
   const { socket, response } = Deno.upgradeWebSocket(req)
 
   const userID = req.url.split("?userID=")[1]
+
+  if(!userID){
+    throw new Error(`NO USER IDin ${req.url}`)
+  }
 
   socket.onclose = _e => {
     log(userID, `SOCKET CLOSED!`)
@@ -95,11 +101,18 @@ function WSHandler(req: Request) {
   return response
 }
 
-// beacon handler
+/**
+ * beacon handler
+ * @throws if no userID queryparam
+ */
 async function EventLogHandler(req: Request) {
   try {
     const text = await req.text()
     const userID = req.url.split("?userID=")[1]
+
+    if(!userID){
+      throw new Error(`NO USER IDin ${req.url}`)
+    }
 
     log(userID, text)
 
