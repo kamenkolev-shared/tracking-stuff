@@ -2,15 +2,17 @@
   "name": "activity-tracker",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./lib/main.js",
+  "types": "./lib/main.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc -p tsconfig.json"
   },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
   "dependencies": {
     "bowser": "^2.11.0",
     "page-lifecycle": "^0.1.2"
+  },
+  "devDependencies": {
+    "typescript": "~4.6"
   }
 }
