@@ -1,31 +1,26 @@
 import { FEEvents, pingInterval } from "../shared/index.js"
 import { userID } from "./shared.js"
-// import { debouncePerArg } from "./utils.js"
-// import {
-//   FEEvent,
-// } from "../shared"
-import { wsURL as _wsURL, apiURL } from "./shared"
-import { tracker } from "../activity-tracker/main"
-tracker.addEventListener(123)
+import { wsURL, apiURL } from "./shared"
+import {  PageState, tracker } from "../activity-tracker/main"
 
 // +?userID=${userID}
 // TODO move and change based on env
-const wsURL = `${_wsURL}/ws?userID=${userID}`
-const eventLogUrl = `${apiURL}/log?userID=${userID}`
+const websocketURL = `${wsURL}?userID=${userID}`
+const logURL = `${apiURL}log?userID=${userID}`
 
 type FailedBeacon = {
   type: "Beacon failure"
   time: number
   url: string
-  data: FEEvent // TODO
+  data: PageState // TODO
 }
 
 /**
  *
  * @param {string} data
  */
-const sendEvent = debouncePerArg(10)((data: FEEvent) => {
-  const queued = navigator.sendBeacon(eventLogUrl, data)
+const sendEvent = (data: PageState) => {
+  const queued = navigator.sendBeacon(logURL, data)
   if (!queued) {
     /**
      * @type {Array}
@@ -40,13 +35,13 @@ const sendEvent = debouncePerArg(10)((data: FEEvent) => {
         failedBeacons.concat({
           type: "Beacon failure",
           time: Date.now(),
-          url: eventLogUrl,
+          url: logURL,
           data,
         }),
       ),
     )
   }
-})
+}
 
 const sendFailedBeacons = async () => {
   await Promise.all(
@@ -54,7 +49,7 @@ const sendFailedBeacons = async () => {
       (
         beaconFailure: string, // ?string?
       ) =>
-        fetch(eventLogUrl, {
+        fetch(logURL, {
           method: "POST",
           body: beaconFailure,
         }),
@@ -64,7 +59,7 @@ const sendFailedBeacons = async () => {
 }
 
 const openWS = () => {
-  const ws = new WebSocket(wsURL)
+  const ws = new WebSocket(websocketURL)
   let interval: number | null = null
   ws.onopen = () => {
     interval = setInterval(() => {
@@ -83,36 +78,12 @@ const openWS = () => {
   ws.onerror = console.warn
 }
 
+console.log("a")
+tracker.addEventListener(e => {
+  debugger
+  sendEvent(e.newState)
+})
 openWS()
 
 // ? for when tab is minimized / maximized / opened / gracefully closed
-
-document.addEventListener("visibilitychange", () => {
-  sendEvent(
-    document.visibilityState === "visible"
-      ? FEEvents.pageVisible
-      : FEEvents.pageHide,
-  )
-})
-
-// ? For when app is not focused
-window.addEventListener("blur", () => {
-  sendEvent(FEEvents.windowBlur)
-})
-
-window.addEventListener("focus", () => {
-  sendEvent(FEEvents.windowFocus)
-})
-
-// TODO add beforeUnload?
-window.addEventListener("unload", () => {
-  sendEvent(FEEvents.windowUnload)
-})
-
-// could it be visible, but not focused?
-sendEvent(
-  document.visibilityState === "visible"
-    ? FEEvents.initVisible
-    : FEEvents.initHidden,
-)
 sendFailedBeacons()
