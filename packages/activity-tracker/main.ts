@@ -32,8 +32,6 @@ export type StateChangeEvent = {
 
 export const tracker = {
   addEventListener: (listener: StateChangeEventListenerOrObject) => {
-    console.log("b")
-
     lifecycle.addEventListener("statechange", listener)
   },
 

@@ -694,7 +694,6 @@
   // packages/client/shared.ts
   var { wsURL, apiURL } = env_default;
   var userID = Number(prompt("Please enter a numeric ID"));
-  var baseURL = "tracking-stuff.deno.dev";
 
   // packages/activity-tracker/main.ts
   var import_bowser = __toESM(require_es5());
@@ -821,7 +820,6 @@
   }
   var tracker = {
     addEventListener: (listener) => {
-      console.log("b");
       lifecycle_default.addEventListener("statechange", listener);
     },
     removeEventListener: (listener) => {
@@ -837,7 +835,7 @@
 
   // packages/client/client.ts
   var websocketURL = `${wsURL}?userID=${userID}`;
-  var logURL = `${apiURL}/log?userID=${userID}`;
+  var logURL = `${apiURL}log?userID=${userID}`;
   var sendEvent = (data) => {
     const queued = navigator.sendBeacon(logURL, data);
     if (!queued) {
@@ -874,9 +872,7 @@
     ws.onclose = handleClose;
     ws.onerror = console.warn;
   };
-  console.log("a");
   tracker.addEventListener((e2) => {
-    debugger;
     sendEvent(e2.newState);
   });
   openWS();
@@ -888,11 +884,12 @@
   var updateButton = document.querySelector("button#update");
   var clearButton = document.querySelector("button#clear");
   function updateLogList() {
-    fetch(`https://${baseURL}/${endpoints[2]}`).then((req) => req.json()).then((json) => el.textContent = JSON.stringify(json, void 0, 2));
+    console.log(`${apiURL}${endpoints[2]}`);
+    fetch(`${apiURL}${endpoints[2]}`).then((req) => req.json()).then((json) => el.textContent = JSON.stringify(json, void 0, 2));
   }
   updateButton?.addEventListener("click", updateLogList);
   clearButton?.addEventListener("click", () => {
-    fetch(`https://${baseURL}/${endpoints[3]}`, { method: "HEAD" });
+    fetch(`${apiURL}${endpoints[3]}`, { method: "HEAD" });
   });
   updateLogList();
 })();

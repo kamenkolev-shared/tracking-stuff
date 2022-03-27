@@ -4,8 +4,8 @@ const devEnv = {
 }
 
 const prodEnv = {
-  wsURL: "wss://tracking-stuff.deno.de/ws",
-  apiURL: "https://tracking-stuff.deno.de/",
+  wsURL: "wss://tracking-stuff.deno.dev/ws",
+  apiURL: "https://tracking-stuff.deno.dev/",
 }
 
 // TODO replace with real envs

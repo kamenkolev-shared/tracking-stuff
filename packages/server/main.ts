@@ -54,7 +54,6 @@ async function Handler(req: Request) {
  * @throws if no userID queryParam
  */
 function WSHandler(req: Request) {
-  console.log("handler called")
   if (req.headers.get("upgrade") != "websocket") {
     return new Response(null, { status: 501 })
   }
@@ -62,7 +61,7 @@ function WSHandler(req: Request) {
 
   const userID = req.url.split("?userID=")[1]
 
-  if(!userID){
+  if (!userID) {
     throw new Error(`NO USER ID in ${req.url}`)
   }
 
@@ -86,10 +85,8 @@ function WSHandler(req: Request) {
   }, pingInterval * 5)
 
   socket.onmessage = e => {
-    if (e.data === "ping") {
-      // log(userID, `USER PINGED`)
-      expirationTimestamp = Date.now() + maxDuration
-    }
+    // log(userID, `USER PINGED`)
+    expirationTimestamp = Date.now() + maxDuration
   }
 
   socket.onopen = _e => {

@@ -78,9 +78,7 @@ const openWS = () => {
   ws.onerror = console.warn
 }
 
-console.log("a")
 tracker.addEventListener(e => {
-  debugger
   sendEvent(e.newState)
 })
 openWS()
