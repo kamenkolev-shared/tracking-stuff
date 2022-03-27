@@ -7,10 +7,12 @@
     "bowser": "^2.11.0",
     "page-lifecycle": "^0.1.2",
     "prettier": "^2.6.0",
+    "puppeteer": "^13.5.1",
     "typescript": "^4.6.2"
   },
   "devDependencies": {
     "@types/node": "^17.0.21",
+    "@types/puppeteer": "^5.4.5",
     "esbuild": "^0.14.27",
     "http-server": "^14.1.0",
     "prettier": "^2.6.0",
@@ -21,6 +23,7 @@
     "watch:fe": "esbuild packages/client/main.ts --watch --bundle --outfile=packages/client/public/main.js",
     "build:fe": "esbuild packages/client/main.ts --bundle --outfile=packages/client/public/main.js",
     "serve:be": "deno run packages/server/main.ts --allow-read --allow-net",
+    "e2e": "",
     "generate-deno-types": "deno types > server/typings/deno.d.ts"
   },
   "repository": {
