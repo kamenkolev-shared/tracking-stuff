@@ -24,3 +24,14 @@ The spike should have subtasks that can be assigned to different people to build
 <!-- TODO, read and research
 https://volument.com/blog/sendbeacon-is-broken
  -->
+
+## TODO
+
+https://developer.chrome.com/docs/extensions/reference/tabs/#method-discard
+https://developer.chrome.com/docs/extensions/reference/tabs/#type-TabStatus
+https://techdows.com/2019/10/chrome-79-google-tests-tab-freeze-feature.html
+
+chrome://discards
+
+https://addons.mozilla.org/en-US/firefox/addon/unload-tabs/
+https://chrome.google.com/webstore/detail/unload-tab/jacifdaceeamhebaonnnaangpkajehjb

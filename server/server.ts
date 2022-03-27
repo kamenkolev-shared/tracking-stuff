@@ -1,7 +1,8 @@
 // deno-lint-ignore-file ban-ts-comment
 // @ts-ignore
 import { serve } from "https://deno.land/std/http/mod.ts"
-import { pingInterval } from '../shared'
+// @ts-ignore
+import { pingInterval, Endpoint, endpoints} from "../shared/index.ts"
 
 let logs: {
   [userID: string]: Array<{
@@ -27,28 +28,25 @@ const log = (userID: string, message: string) => {
   logSize++
 }
 
-const paths = ["ws", "log", "list", "clearList"] as const
-type path = typeof paths[number]
-
 async function Handler(req: Request) {
-  const path: path = new URL(req.url).pathname.slice(1) as path
+  const path: Endpoint = new URL(req.url).pathname.slice(1) as Endpoint
 
-  if (!paths.includes(path as any)) {
-    return new Response(path, { status: 400 })
+  if (!endpoints.includes(path as any)) {
+    return new Response(path, { status: 404 })
   }
 
   switch (path) {
     case "ws":
-      return await WSHandler(req)
+      return WSHandler(req)
 
     case "log":
-      return await EventLogHandler(req)
+      return EventLogHandler(req)
 
     case "clearList":
-      return await ClearLogsHandler(req)
+      return ClearLogsHandler(req)
 
     case "list":
-      return await ListLogsHandler(req)
+      return ListLogsHandler(req)
   }
 }
 
@@ -65,7 +63,7 @@ function WSHandler(req: Request) {
   const userID = req.url.split("?userID=")[1]
 
   if(!userID){
-    throw new Error(`NO USER IDin ${req.url}`)
+    throw new Error(`NO USER ID in ${req.url}`)
   }
 
   socket.onclose = _e => {
@@ -111,7 +109,7 @@ async function EventLogHandler(req: Request) {
     const userID = req.url.split("?userID=")[1]
 
     if(!userID){
-      throw new Error(`NO USER IDin ${req.url}`)
+      throw new Error(`NO USER ID in ${req.url}`)
     }
 
     log(userID, text)
@@ -149,3 +147,4 @@ function ClearLogsHandler(req: Request) {
 }
 
 serve(Handler)
+console.log("server running")

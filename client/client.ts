@@ -1,26 +1,38 @@
-import { events, pingInterval } from "../shared/index.js"
-import { baseURL, userID } from "./shared.js"
+import { FEEvents, pingInterval } from "../shared/index.js"
+import { userID } from "./shared.js"
 import { debouncePerArg } from "./utils.js"
-import { event } from "../shared/index"
+import {
+  FEEvent,
+
+} from "../shared"
+import {
+  wsURL as _wsURL,
+  apiURL,
+} from "./shared"
+
+// +?userID=${userID}
+// TODO move and change based on env
+const wsURL = `${_wsURL}/ws?userID=${userID}`
+const eventLogUrl = `${apiURL}/log?userID=${userID}`
 
 type FailedBeacon = {
   type: "Beacon failure"
   time: number
   url: string
-  data: event // TODO
+  data: FEEvent // TODO
 }
 
 /**
  *
  * @param {string} data
  */
-const sendEvent = debouncePerArg(10)((data: event) => {
+const sendEvent = debouncePerArg(10)((data: FEEvent) => {
   const queued = navigator.sendBeacon(eventLogUrl, data)
   if (!queued) {
     /**
      * @type {Array}
      */
-    const failedBeacons = JSON.parse(
+    const failedBeacons: FailedBeacon[] = JSON.parse(
       localStorage.getItem("failed-beacons") ?? "[]",
     )
 
@@ -41,7 +53,9 @@ const sendEvent = debouncePerArg(10)((data: event) => {
 const sendFailedBeacons = async () => {
   await Promise.all(
     JSON.parse(localStorage.getItem("failed-beacons") ?? "[]").map(
-      (beaconFailure: string) => // ?string?
+      (
+        beaconFailure: string, // ?string?
+      ) =>
         fetch(eventLogUrl, {
           method: "POST",
           body: beaconFailure,
@@ -51,17 +65,13 @@ const sendFailedBeacons = async () => {
   localStorage.setItem("failed-beacons", "[]")
 }
 
-// TODO move and change based on env
-const wsURL = `wss://${baseURL}/ws?userID=${userID}`
-const eventLogUrl = `https://${baseURL}/log?userID=${userID}`
-
 const openWS = () => {
   const ws = new WebSocket(wsURL)
   let interval: number | null = null
   ws.onopen = () => {
     interval = setInterval(() => {
       ws.send("")
-    }, pingInterval)
+    }, pingInterval) as any
   }
 
   const handleClose = () => {
@@ -82,28 +92,29 @@ openWS()
 document.addEventListener("visibilitychange", () => {
   sendEvent(
     document.visibilityState === "visible"
-      ? events.pageVisible
-      : events.pageHide,
+      ? FEEvents.pageVisible
+      : FEEvents.pageHide,
   )
 })
 
 // ? For when app is not focused
 window.addEventListener("blur", () => {
-  sendEvent(events.windowBlur)
+  sendEvent(FEEvents.windowBlur)
 })
 
 window.addEventListener("focus", () => {
-  sendEvent(events.windowFocus)
+  sendEvent(FEEvents.windowFocus)
 })
 
+// TODO add beforeUnload?
 window.addEventListener("unload", () => {
-  sendEvent(events.windowUnload)
+  sendEvent(FEEvents.windowUnload)
 })
 
 // could it be visible, but not focused?
 sendEvent(
   document.visibilityState === "visible"
-    ? events.initVisible
-    : events.initHidden,
+    ? FEEvents.initVisible
+    : FEEvents.initHidden,
 )
 sendFailedBeacons()

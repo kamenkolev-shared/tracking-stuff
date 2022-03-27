@@ -1,6 +1,6 @@
 export const pingInterval = 1000
 
-export const events = {
+export const FEEvents = {
   initVisible: "APP_INIT & APP_VISIBLE",
   initHidden: "APP_INIT",
 
@@ -11,4 +11,8 @@ export const events = {
 
   windowUnload: "APP_CLOSED", // ? useless?
 } as const
-export type event = typeof events[keyof typeof events]
+export type FEEvent = typeof FEEvents[keyof typeof FEEvents]
+
+export const endpoints = ["ws", "log", "list", "clearList"] as const
+export type Endpoint = typeof endpoints[number]
+
