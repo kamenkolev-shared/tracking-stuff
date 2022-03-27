@@ -2,7 +2,7 @@
 // @ts-ignore
 import { serve } from "https://deno.land/std/http/mod.ts"
 // @ts-ignore
-import { pingInterval, Endpoint, endpoints} from "../shared/index.ts"
+import { pingInterval, Endpoint, endpoints } from "../packages/shared/index.ts"
 
 let logs: {
   [userID: string]: Array<{

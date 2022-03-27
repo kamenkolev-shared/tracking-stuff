@@ -1,9 +1,9 @@
-import { endpoints } from '../shared/index.js'
+import { endpoints } from "../shared/index.js"
 import { baseURL, userID } from "./shared.js"
 
 const el = document.getElementsByTagName("pre")[0] as HTMLPreElement
 
-document.getElementById('userID')!.textContent = String(userID)
+document.getElementById("userID")!.textContent = String(userID)
 const updateButton = document.querySelector("button#update")
 const clearButton = document.querySelector("button#clear")
 
